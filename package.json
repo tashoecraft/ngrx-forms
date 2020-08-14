@@ -48,11 +48,11 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@angular/core": ">=8.0.0",
-    "@angular/common": ">=8.0.0",
-    "@angular/forms": ">=8.0.0",
-    "@ngrx/store": ">=7.0.0",
-    "typescript": ">=3.4.0"
+    "@angular/core": ">=9.0.0",
+    "@angular/common": ">=9.0.0",
+    "@angular/forms": ">=9.0.0",
+    "@ngrx/store": ">=9.0.0",
+    "typescript": ">=3.7.0"
   },
   "devDependencies": {
     "@angular/common": "8.0.0",
