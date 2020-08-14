@@ -1,21 +1,20 @@
-import { Actions, MarkAsPristineAction } from '../../actions';
-import { FormControlState, FormControlValueTypes } from '../../state';
+import * as NgrxActions from '../../actions';
+import {Action, createReducer, on} from "@ngrx/store";
 
-export function markAsPristineReducer<TValue extends FormControlValueTypes>(
-  state: FormControlState<TValue>,
-  action: Actions<TValue>,
-): FormControlState<TValue> {
-  if (action.type !== MarkAsPristineAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.MarkAsPristineAction, (state: any) => {
+      if (state.isPristine) {
+        return state;
+      }
 
-  if (state.isPristine) {
-    return state;
-  }
+      return {
+        ...state,
+        isDirty: false,
+        isPristine: true,
+      };
+    })
+)
 
-  return {
-    ...state,
-    isDirty: false,
-    isPristine: true,
-  };
+export function markAsPristineReducer(state: any, action: Action): any {
+  return reducer(state, action);
 }

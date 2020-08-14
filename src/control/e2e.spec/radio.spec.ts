@@ -4,7 +4,7 @@ import { Action, ActionsSubject } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { bufferCount, skip, take } from 'rxjs/operators';
 
-import { MarkAsDirtyAction, SetValueAction } from '../../actions';
+import {ALL_NGRX_FORMS_ACTION_TYPES, MarkAsDirtyAction, SetValueAction} from '../../actions';
 import { NgrxFormsModule } from '../../module';
 import { createFormControlState, FormControlState } from '../../state';
 
@@ -77,9 +77,9 @@ describe(RadioTestComponent.name, () => {
   });
 
   it(`should trigger a ${SetValueAction.name} with the selected value when an option is selected`, done => {
-    actions$.pipe(take(1)).subscribe(a => {
-      expect(a.type).toBe(SetValueAction.TYPE);
-      expect((a as SetValueAction<string>).value).toBe(RADIO_OPTIONS[0]);
+    actions$.pipe(take(1)).subscribe((a: any) => {
+      expect(a.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.SetValueActionType);
+      expect(a.value).toBe(RADIO_OPTIONS[0]);
       done();
     });
 
@@ -88,7 +88,7 @@ describe(RadioTestComponent.name, () => {
 
   it(`should trigger a ${MarkAsDirtyAction.name} when an option is selected`, done => {
     actions$.pipe(skip(1), take(1)).subscribe(a => {
-      expect(a.type).toBe(MarkAsDirtyAction.TYPE);
+      expect(a.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.MarkAsDirtyActionType);
       done();
     });
 
@@ -97,12 +97,12 @@ describe(RadioTestComponent.name, () => {
 
   it(`should trigger ${SetValueAction.name}s and ${MarkAsDirtyAction.name}s when switching between options`, done => {
     actions$.pipe(bufferCount(4), take(1)).subscribe(([a1, a2, a3, a4]) => {
-      expect(a1.type).toBe(SetValueAction.TYPE);
-      expect(a2.type).toBe(MarkAsDirtyAction.TYPE);
-      expect(a3.type).toBe(SetValueAction.TYPE);
-      expect(a4.type).toBe(MarkAsDirtyAction.TYPE);
-      expect((a1 as SetValueAction<string>).value).toBe(RADIO_OPTIONS[0]);
-      expect((a3 as SetValueAction<string>).value).toBe(RADIO_OPTIONS[1]);
+      expect(a1.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.SetValueActionType);
+      expect(a2.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.MarkAsDirtyActionType);
+      expect(a3.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.SetValueActionType);
+      expect(a4.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.MarkAsDirtyActionType);
+      expect((a1 as any).value).toBe(RADIO_OPTIONS[0]);
+      expect((a3 as any).value).toBe(RADIO_OPTIONS[1]);
       done();
     });
 
@@ -116,8 +116,8 @@ describe(RadioTestComponent.name, () => {
     const newValue = 'new value';
 
     actions$.pipe(take(1)).subscribe(a => {
-      expect(a.type).toBe(SetValueAction.TYPE);
-      expect((a as SetValueAction<string>).value).toBe(newValue);
+      expect(a.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.SetValueActionType);
+      expect((a as any).value).toBe(newValue);
       done();
     });
 

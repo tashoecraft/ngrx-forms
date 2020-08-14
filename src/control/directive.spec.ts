@@ -130,7 +130,7 @@ describe(NgrxFormControlDirective.name, () => {
       const newValue = 'new value';
 
       actions$.pipe(first()).subscribe(a => {
-        expect(a).toEqual(new SetValueAction(INITIAL_STATE.id, newValue));
+        expect(a).toEqual(SetValueAction({controlId: INITIAL_STATE.id, value: newValue}));
         done();
       });
 
@@ -149,7 +149,7 @@ describe(NgrxFormControlDirective.name, () => {
 
     it(`should dispatch a ${MarkAsDirtyAction.name} if the view value changes when the state is not marked as dirty`, done => {
       actions$.pipe(skip(1)).pipe(first()).subscribe(a => {
-        expect(a).toEqual(new MarkAsDirtyAction(INITIAL_STATE.id));
+        expect(a).toEqual(MarkAsDirtyAction({controlId: INITIAL_STATE.id}));
         done();
       });
 
@@ -202,7 +202,7 @@ describe(NgrxFormControlDirective.name, () => {
 
     it(`should dispatch a ${MarkAsTouchedAction.name} if the view adapter notifies and the state is not touched`, done => {
       actions$.pipe(first()).subscribe(a => {
-        expect(a).toEqual(new MarkAsTouchedAction(INITIAL_STATE.id));
+        expect(a).toEqual(MarkAsTouchedAction({controlId: INITIAL_STATE.id}));
         done();
       });
 
@@ -233,7 +233,7 @@ describe(NgrxFormControlDirective.name, () => {
       const newValue = 'new value';
 
       actions$.pipe(first()).subscribe(a => {
-        expect(a).toEqual(new SetValueAction(INITIAL_STATE.id, newValue));
+        expect(a).toEqual(SetValueAction({controlId: INITIAL_STATE.id, value: newValue}));
         done();
       });
 
@@ -359,7 +359,7 @@ describe(NgrxFormControlDirective.name, () => {
 
     it('should convert the view value if it changes', done => {
       actions$.pipe(first()).subscribe(a => {
-        expect(a).toEqual(new SetValueAction(INITIAL_STATE.id, STATE_VALUE));
+        expect(a).toEqual(SetValueAction({controlId: INITIAL_STATE.id, value: STATE_VALUE}));
         done();
       });
 
@@ -429,7 +429,7 @@ describe(NgrxFormControlDirective.name, () => {
         directive.ngOnInit();
 
         actions$.pipe(first()).subscribe(a => {
-          expect(a).toEqual(new FocusAction(INITIAL_STATE.id));
+          expect(a).toEqual(FocusAction({controlId: INITIAL_STATE.id}));
           done();
         });
 
@@ -456,7 +456,7 @@ describe(NgrxFormControlDirective.name, () => {
         directive.ngOnInit();
 
         actions$.pipe(first()).subscribe(a => {
-          expect(a).toEqual(new UnfocusAction(INITIAL_STATE.id));
+          expect(a).toEqual(UnfocusAction({controlId: INITIAL_STATE.id}));
           done();
         });
 

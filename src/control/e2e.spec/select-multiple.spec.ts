@@ -4,7 +4,7 @@ import { Action, ActionsSubject } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { first, skip } from 'rxjs/operators';
 
-import { MarkAsDirtyAction, SetValueAction } from '../../actions';
+import {ALL_NGRX_FORMS_ACTION_TYPES, MarkAsDirtyAction} from '../../actions';
 import { box, Boxed } from '../../boxing';
 import { NgrxValueConverters } from '../../control/value-converter';
 import { NgrxFormsModule } from '../../module';
@@ -69,8 +69,8 @@ describe(SelectMultipleComponent.name, () => {
 
   it('should trigger a SetValueAction with the selected value when an option is selected', done => {
     actions$.pipe(first()).subscribe(a => {
-      expect(a.type).toBe(SetValueAction.TYPE);
-      expect((a as SetValueAction<string>).value).toBe(JSON.stringify(SELECT_OPTIONS));
+      expect(a.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.SetValueActionType);
+      expect((a as any).value).toBe(JSON.stringify(SELECT_OPTIONS));
       done();
     });
 
@@ -80,7 +80,7 @@ describe(SelectMultipleComponent.name, () => {
 
   it(`should trigger a ${MarkAsDirtyAction.name} when an option is selected`, done => {
     actions$.pipe(skip(1), first()).subscribe(a => {
-      expect(a.type).toBe(MarkAsDirtyAction.TYPE);
+      expect(a.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.MarkAsDirtyActionType);
       done();
     });
 
@@ -145,8 +145,8 @@ describe(SelectMultipleWithoutConverterComponent.name, () => {
 
   it('should trigger a SetValueAction with the selected value when an option is selected', done => {
     actions$.pipe(first()).subscribe(a => {
-      expect(a.type).toBe(SetValueAction.TYPE);
-      expect((a as SetValueAction<Boxed<string[]>>).value).toEqual(box(SELECT_OPTIONS));
+      expect(a.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.SetValueActionType);
+      expect((a as any).value).toEqual(box(SELECT_OPTIONS));
       done();
     });
 
@@ -156,7 +156,7 @@ describe(SelectMultipleWithoutConverterComponent.name, () => {
 
   it(`should trigger a ${MarkAsDirtyAction.name} when an option is selected`, done => {
     actions$.pipe(skip(1), first()).subscribe(a => {
-      expect(a.type).toBe(MarkAsDirtyAction.TYPE);
+      expect(a.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.MarkAsDirtyActionType);
       done();
     });
 

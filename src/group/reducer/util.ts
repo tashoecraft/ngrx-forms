@@ -1,10 +1,10 @@
-import { Actions } from '../../actions';
 import { formStateReducer } from '../../reducer';
 import { computeGroupState, FormGroupControls, FormGroupState, FormState, KeyValue } from '../../state';
+import {Action} from "@ngrx/store";
 
 export function dispatchActionPerChild<TValue extends KeyValue>(
   controls: FormGroupControls<TValue>,
-  actionCreator: (controlId: string) => Actions<TValue>,
+  actionCreator: (controlId: string) => Action,
 ) {
   let hasChanged = false;
   const newControls = Object.keys(controls)
@@ -18,7 +18,7 @@ export function dispatchActionPerChild<TValue extends KeyValue>(
 
 function callChildReducers<TValue extends { [key: string]: any }>(
   controls: FormGroupControls<TValue>,
-  action: Actions<TValue>,
+  action: Action,
 ): FormGroupControls<TValue> {
   let hasChanged = false;
   const newControls = Object.keys(controls)
@@ -30,7 +30,7 @@ function callChildReducers<TValue extends { [key: string]: any }>(
   return hasChanged ? newControls : controls;
 }
 
-export function childReducer<TValue extends KeyValue>(state: FormGroupState<TValue>, action: Actions<TValue>) {
+export function childReducer<TValue extends KeyValue>(state: FormGroupState<TValue>, action: Action) {
   const controls = callChildReducers(state.controls, action);
 
   if (state.controls === controls) {

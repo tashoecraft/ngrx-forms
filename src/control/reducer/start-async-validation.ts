@@ -1,21 +1,20 @@
-import { Actions, StartAsyncValidationAction } from '../../actions';
-import { FormControlState, FormControlValueTypes } from '../../state';
+import {Action, createReducer, on} from "@ngrx/store";
+import * as NgrxActions from '../../actions';
 
-export function startAsyncValidationReducer<TValue extends FormControlValueTypes>(
-  state: FormControlState<TValue>,
-  action: Actions<TValue>,
-): FormControlState<TValue> {
-  if (action.type !== StartAsyncValidationAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.StartAsyncValidationAction, (state: any, action) => {
+      if (state.pendingValidations.indexOf(action.name) >= 0) {
+        return state;
+      }
 
-  if (state.pendingValidations.indexOf(action.name) >= 0) {
-    return state;
-  }
+      return {
+        ...state,
+        pendingValidations: [...state.pendingValidations, action.name],
+        isValidationPending: true,
+      };
+    })
+)
 
-  return {
-    ...state,
-    pendingValidations: [...state.pendingValidations, action.name],
-    isValidationPending: true,
-  };
+export function startAsyncValidationReducer(state: any, action: Action): any {
+  return reducer(state, action);
 }

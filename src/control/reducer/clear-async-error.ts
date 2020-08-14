@@ -1,37 +1,36 @@
-import { Actions, ClearAsyncErrorAction } from '../../actions';
-import { FormControlState, FormControlValueTypes } from '../../state';
 import { isEmpty } from '../../util';
+import {Action, createReducer, on} from "@ngrx/store";
+import * as NgrxActions from '../../actions';
 
-export function clearAsyncErrorReducer<TValue extends FormControlValueTypes>(
-  state: FormControlState<TValue>,
-  action: Actions<TValue>,
-): FormControlState<TValue> {
-  if (action.type !== ClearAsyncErrorAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.ClearAsyncErrorAction, (state: any, action) => {
+      const name = `$${action.name}`;
 
-  const name = `$${action.name}`;
+      let errors = state.errors;
 
-  let errors = state.errors;
+      if (errors.hasOwnProperty(name)) {
+        errors = { ...state.errors };
+        delete (errors as any)[name];
+      }
 
-  if (errors.hasOwnProperty(name)) {
-    errors = { ...state.errors };
-    delete (errors as any)[name];
-  }
+      const pendingValidations = state.pendingValidations.filter((v: string) => v !== action.name);
+      const isValid = isEmpty(errors);
 
-  const pendingValidations = state.pendingValidations.filter(v => v !== action.name);
-  const isValid = isEmpty(errors);
+      if (errors === state.errors && isValid === state.isValid && pendingValidations.length === state.pendingValidations.length) {
+        return state;
+      }
 
-  if (errors === state.errors && isValid === state.isValid && pendingValidations.length === state.pendingValidations.length) {
-    return state;
-  }
+      return {
+        ...state,
+        isValid,
+        isInvalid: !isValid,
+        errors,
+        pendingValidations,
+        isValidationPending: pendingValidations.length > 0,
+      };
+    })
+)
 
-  return {
-    ...state,
-    isValid,
-    isInvalid: !isValid,
-    errors,
-    pendingValidations,
-    isValidationPending: pendingValidations.length > 0,
-  };
+export function clearAsyncErrorReducer(state: any, action: Action): any {
+  return reducer(state, action);
 }

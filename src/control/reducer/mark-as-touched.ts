@@ -1,21 +1,20 @@
-import { Actions, MarkAsTouchedAction } from '../../actions';
-import { FormControlState, FormControlValueTypes } from '../../state';
+import {Action, createReducer, on} from "@ngrx/store";
+import * as NgrxActions from '../../actions';
 
-export function markAsTouchedReducer<TValue extends FormControlValueTypes>(
-  state: FormControlState<TValue>,
-  action: Actions<TValue>,
-): FormControlState<TValue> {
-  if (action.type !== MarkAsTouchedAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.MarkAsTouchedAction, (state: any) => {
+      if (state.isTouched) {
+        return state;
+      }
 
-  if (state.isTouched) {
-    return state;
-  }
+      return {
+        ...state,
+        isTouched: true,
+        isUntouched: false,
+      };
+    })
+)
 
-  return {
-    ...state,
-    isTouched: true,
-    isUntouched: false,
-  };
+export function markAsTouchedReducer(state: any, action: Action): any {
+  return reducer(state, action)
 }

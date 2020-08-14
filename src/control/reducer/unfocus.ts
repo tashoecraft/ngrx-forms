@@ -1,21 +1,20 @@
-import { Actions, UnfocusAction } from '../../actions';
-import { FormControlState, FormControlValueTypes } from '../../state';
+import {Action, createReducer, on} from "@ngrx/store";
+import * as NgrxActions from '../../actions';
 
-export function unfocusReducer<TValue extends FormControlValueTypes>(
-  state: FormControlState<TValue>,
-  action: Actions<TValue>,
-): FormControlState<TValue> {
-  if (action.type !== UnfocusAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.UnfocusAction, (state: any) => {
+      if (state.isUnfocused) {
+        return state;
+      }
 
-  if (state.isUnfocused) {
-    return state;
-  }
+      return {
+        ...state,
+        isFocused: false,
+        isUnfocused: true,
+      };
+    })
+)
 
-  return {
-    ...state,
-    isFocused: false,
-    isUnfocused: true,
-  };
+export function unfocusReducer(state: any, action: Action): any {
+  return reducer(state, action);
 }

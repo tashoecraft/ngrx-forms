@@ -1,14 +1,9 @@
-import { Action } from '@ngrx/store';
+import {Action, combineReducers} from '@ngrx/store';
 
 import {
-  Actions,
-  AddArrayControlAction,
-  FocusAction,
   isNgrxFormsAction,
-  RemoveArrayControlAction,
-  UnfocusAction,
 } from '../actions';
-import { FormGroupState, isGroupState, KeyValue } from '../state';
+import { isGroupState } from '../state';
 import { addControlReducer } from './reducer/add-control';
 import { clearAsyncErrorReducer } from './reducer/clear-async-error';
 import { disableReducer } from './reducer/disable';
@@ -26,9 +21,10 @@ import { setErrorsReducer } from './reducer/set-errors';
 import { setUserDefinedPropertyReducer } from './reducer/set-user-defined-property';
 import { setValueReducer } from './reducer/set-value';
 import { startAsyncValidationReducer } from './reducer/start-async-validation';
-import { childReducer } from './reducer/util';
+import {focusReducer} from "../control/reducer/focus";
+import {unfocusReducer} from "../control/reducer/unfocus";
 
-export function formGroupReducerInternal<TValue extends KeyValue>(state: FormGroupState<TValue>, action: Actions<TValue>) {
+export function formGroupReducer(state: any, action: Action) {
   if (!isGroupState(state)) {
     throw new Error('The state must be a group state');
   }
@@ -37,49 +33,31 @@ export function formGroupReducerInternal<TValue extends KeyValue>(state: FormGro
     return state;
   }
 
-  if (!action.controlId.startsWith(state.id)) {
+  if (!(action as any).controlId.startsWith(state.id)) {
     return state;
   }
 
-  switch (action.type) {
-    case FocusAction.TYPE:
-    case UnfocusAction.TYPE:
-    case AddArrayControlAction.TYPE:
-    case RemoveArrayControlAction.TYPE:
-      return childReducer(state, action);
-
-    default:
-      break;
-  }
-
-  state = setValueReducer(state, action);
-  state = setErrorsReducer(state, action);
-  state = startAsyncValidationReducer(state, action);
-  state = setAsyncErrorReducer(state, action);
-  state = clearAsyncErrorReducer(state, action);
-  state = enableReducer(state, action);
-  state = disableReducer(state, action);
-  state = markAsDirtyReducer(state, action);
-  state = markAsPristineReducer(state, action);
-  state = markAsTouchedReducer(state, action);
-  state = markAsUntouchedReducer(state, action);
-  state = markAsSubmittedReducer(state, action);
-  state = markAsUnsubmittedReducer(state, action);
-  state = addControlReducer(state, action);
-  state = removeControlReducer(state, action);
-  state = setUserDefinedPropertyReducer(state, action);
-  state = resetReducer(state, action);
-
-  return state;
-}
-
-/**
- * This reducer function updates a form group state with actions.
- */
-export function formGroupReducer<TValue extends KeyValue>(state: FormGroupState<TValue> | undefined, action: Action) {
-  if (!state) {
-    throw new Error('The group state must be defined!');
-  }
-
-  return formGroupReducerInternal(state, action as any);
+  return combineReducers(
+      [
+        setValueReducer,
+        setErrorsReducer,
+        startAsyncValidationReducer,
+        setAsyncErrorReducer,
+        clearAsyncErrorReducer,
+        enableReducer,
+        disableReducer,
+        markAsDirtyReducer,
+        markAsPristineReducer,
+        markAsTouchedReducer,
+        markAsUntouchedReducer,
+        markAsSubmittedReducer,
+        markAsUnsubmittedReducer,
+        setUserDefinedPropertyReducer,
+        resetReducer,
+        addControlReducer,
+        removeControlReducer,
+        focusReducer,
+        unfocusReducer
+      ]
+  )(state as any, action);
 }

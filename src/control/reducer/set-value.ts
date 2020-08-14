@@ -1,20 +1,21 @@
-import { Actions, SetValueAction } from '../../actions';
-import { FormControlState, FormControlValueTypes, verifyFormControlValueIsValid } from '../../state';
+import {Action, createReducer, on} from "@ngrx/store";
+import * as NgrxActions from '../../actions';
+import {verifyFormControlValueIsValid} from "../../state";
 
-export function setValueReducer<TValue extends FormControlValueTypes>(
-  state: FormControlState<TValue>,
-  action: Actions<TValue>,
-): FormControlState<TValue> {
-  if (action.type !== SetValueAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.SetValueAction, (state: any, action) => {
 
-  if (state.value === action.value) {
-    return state;
-  }
+      if (state.value === action.value) {
+        return state;
+      }
 
-  return {
-    ...state,
-    value: verifyFormControlValueIsValid(action.value),
-  };
+      return {
+        ...state,
+        value: verifyFormControlValueIsValid(action.value),
+      };
+    })
+)
+
+export function setValueReducer(state: any, action: Action): any {
+  return reducer(state, action);
 }

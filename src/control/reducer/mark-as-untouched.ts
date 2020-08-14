@@ -1,21 +1,20 @@
-import { Actions, MarkAsUntouchedAction } from '../../actions';
-import { FormControlState, FormControlValueTypes } from '../../state';
+import {Action, createReducer, on} from "@ngrx/store";
+import * as NgrxActions from '../../actions';
 
-export function markAsUntouchedReducer<TValue extends FormControlValueTypes>(
-  state: FormControlState<TValue>,
-  action: Actions<TValue>,
-): FormControlState<TValue> {
-  if (action.type !== MarkAsUntouchedAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.MarkAsUnsubmittedAction, (state: any) => {
+      if (state.isUntouched) {
+        return state;
+      }
 
-  if (state.isUntouched) {
-    return state;
-  }
+      return {
+        ...state,
+        isTouched: false,
+        isUntouched: true,
+      };
+    })
+)
 
-  return {
-    ...state,
-    isTouched: false,
-    isUntouched: true,
-  };
+export function markAsUntouchedReducer(state: any, action: Action): any {
+  return reducer(state, action);
 }

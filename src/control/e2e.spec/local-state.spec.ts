@@ -4,7 +4,7 @@ import { Action, ActionsSubject } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { count } from 'rxjs/operators';
 
-import { MarkAsDirtyAction } from '../../actions';
+import {ALL_NGRX_FORMS_ACTION_TYPES, MarkAsDirtyAction} from '../../actions';
 import { NgrxFormsModule } from '../../module';
 import { createFormControlState, FormControlState } from '../../state';
 
@@ -76,6 +76,6 @@ describe(NumberSelectComponentLocalStateComponent.name, () => {
     element.dispatchEvent(new Event('change'));
 
     expect(component.action).toBeTruthy();
-    expect(component.action!.type).toBe(MarkAsDirtyAction.TYPE);
+    expect(component.action!.type).toBe(ALL_NGRX_FORMS_ACTION_TYPES.MarkAsDirtyActionType);
   });
 });

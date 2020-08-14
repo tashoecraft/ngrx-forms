@@ -1,21 +1,21 @@
-import { Actions, MarkAsDirtyAction } from '../../actions';
-import { FormControlState, FormControlValueTypes } from '../../state';
+import {Action, createReducer, on} from "@ngrx/store";
 
-export function markAsDirtyReducer<TValue extends FormControlValueTypes>(
-  state: FormControlState<TValue>,
-  action: Actions<TValue>,
-): FormControlState<TValue> {
-  if (action.type !== MarkAsDirtyAction.TYPE) {
-    return state;
-  }
+import * as NgrxActions from '../../actions';
 
-  if (state.isDirty) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.MarkAsDirtyAction, (state: any) => {
+      if (state.isDirty) {
+        return state;
+      }
 
-  return {
-    ...state,
-    isDirty: true,
-    isPristine: false,
-  };
+      return {
+        ...state,
+        isDirty: true,
+        isPristine: false,
+      };
+    })
+)
+
+export function markAsDirtyReducer(state: any, action: Action): any {
+  return reducer(state, action);
 }

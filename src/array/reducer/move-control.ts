@@ -1,6 +1,7 @@
-import { Actions, MoveArrayControlAction } from '../../actions';
-import { computeArrayState, FormArrayState } from '../../state';
-import { childReducer, updateIdRecursive } from './util';
+import * as NgrxActions from '../../actions';
+import {Action, createReducer, on} from "@ngrx/store";
+import {computeArrayState} from "../../state";
+import {childReducer, updateIdRecursive} from "./util";
 
 export function move(array: readonly any[], fromIndex: number, toIndex: number) {
   const item = array[fromIndex];
@@ -23,6 +24,54 @@ export function move(array: readonly any[], fromIndex: number, toIndex: number) 
   }
 }
 
+const reducer = createReducer(
+    {},
+    on(NgrxActions.MoveArrayControlAction, (state: any, action) => {
+      if (action.controlId !== state.id) {
+        return childReducer(state, action);
+      }
+
+      const fromIndex = action.fromIndex;
+      const toIndex = action.toIndex;
+
+      if (fromIndex === toIndex) {
+        return state;
+      }
+
+      if (fromIndex < 0 || toIndex < 0) {
+        throw new Error(`fromIndex ${fromIndex} or toIndex ${fromIndex} was negative`);
+      }
+
+      if (fromIndex >= state.controls.length || toIndex >= state.controls.length) {
+        throw new Error(`fromIndex ${fromIndex} or toIndex ${toIndex} is out of bounds with the length of the controls ${state.controls.length}`);
+      }
+
+      let controls = move(state.controls, fromIndex, toIndex);
+
+      controls = controls.map((c, i) => updateIdRecursive(c, `${state.id}.${i}`));
+
+      return computeArrayState(
+          state.id,
+          controls,
+          state.value,
+          state.errors,
+          state.pendingValidations,
+          state.userDefinedProperties,
+          {
+            wasOrShouldBeDirty: true,
+            wasOrShouldBeEnabled: state.isEnabled,
+            wasOrShouldBeTouched: state.isTouched,
+            wasOrShouldBeSubmitted: state.isSubmitted,
+          }
+      );
+    })
+)
+
+export function moveControlReducer(state: any | undefined, action: Action) {
+    return reducer(state, action);
+}
+
+/*
 export function moveControlReducer<TValue>(
   state: FormArrayState<TValue>,
   action: Actions<TValue[]>,
@@ -68,3 +117,4 @@ export function moveControlReducer<TValue>(
     }
   );
 }
+*/

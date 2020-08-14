@@ -1,21 +1,20 @@
-import { Actions, EnableAction } from '../../actions';
-import { FormControlState, FormControlValueTypes } from '../../state';
+import {Action, createReducer, on} from "@ngrx/store";
+import * as NgrxActions from '../../actions';
 
-export function enableReducer<TValue extends FormControlValueTypes>(
-  state: FormControlState<TValue>,
-  action: Actions<TValue>,
-): FormControlState<TValue> {
-  if (action.type !== EnableAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.EnableAction, (state: any) => {
+      if (state.isEnabled) {
+        return state;
+      }
 
-  if (state.isEnabled) {
-    return state;
-  }
+      return {
+        ...state,
+        isEnabled: true,
+        isDisabled: false,
+      };
+    })
+)
 
-  return {
-    ...state,
-    isEnabled: true,
-    isDisabled: false,
-  };
+export function enableReducer(state: any, action: Action): any {
+  return reducer(state, action);
 }

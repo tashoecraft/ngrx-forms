@@ -1,25 +1,24 @@
-import { Actions, ResetAction } from '../../actions';
-import { FormControlState, FormControlValueTypes } from '../../state';
+import {Action, createReducer, on} from "@ngrx/store";
+import * as NgrxActions from '../../actions';
 
-export function resetReducer<TValue extends FormControlValueTypes>(
-  state: FormControlState<TValue>,
-  action: Actions<TValue>,
-): FormControlState<TValue> {
-  if (action.type !== ResetAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.ResetAction, (state: any) => {
+      if (state.isPristine && state.isUntouched && state.isUnsubmitted) {
+        return state;
+      }
 
-  if (state.isPristine && state.isUntouched && state.isUnsubmitted) {
-    return state;
-  }
+      return {
+        ...state,
+        isDirty: false,
+        isPristine: true,
+        isTouched: false,
+        isUntouched: true,
+        isSubmitted: false,
+        isUnsubmitted: true,
+      };
+    })
+)
 
-  return {
-    ...state,
-    isDirty: false,
-    isPristine: true,
-    isTouched: false,
-    isUntouched: true,
-    isSubmitted: false,
-    isUnsubmitted: true,
-  };
+export function resetReducer(state: any, action: Action): any {
+  return reducer(state, action);
 }

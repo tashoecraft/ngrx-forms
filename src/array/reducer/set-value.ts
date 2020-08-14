@@ -1,8 +1,57 @@
-import { Actions, SetValueAction } from '../../actions';
 import { formStateReducer } from '../../reducer';
-import { computeArrayState, createChildState, FormArrayState } from '../../state';
+import { computeArrayState, createChildState  } from '../../state';
 import { childReducer } from './util';
+import * as NgrxActions from '../../actions';
+import {Action, createReducer, on} from "@ngrx/store";
 
+const reducer = createReducer(
+    {},
+    on(NgrxActions.SetValueAction, (state: any, action: any) => {
+        if (action.controlId !== state.id) {
+            return childReducer(state, action);
+        }
+
+        if (state.value === action.value) {
+            return state;
+        }
+
+        if (action.value instanceof Date) {
+            throw new Error('Date values are not supported. Please used serialized strings instead.');
+        }
+
+        const value = action.value;
+
+        const controls = value
+            .map((v: any, i: any) => {
+                if (!state.controls[i]) {
+                    return createChildState(`${state.id}.${i}`, v);
+                }
+
+                return formStateReducer(state.controls[i], NgrxActions.SetValueAction({controlId: state.controls[i].id, value: v}));
+            });
+
+        return computeArrayState(
+            state.id,
+            controls,
+            value,
+            state.errors,
+            state.pendingValidations,
+            state.userDefinedProperties,
+            {
+                wasOrShouldBeDirty: state.isDirty,
+                wasOrShouldBeEnabled: state.isEnabled,
+                wasOrShouldBeTouched: state.isTouched,
+                wasOrShouldBeSubmitted: state.isSubmitted,
+            },
+        );
+    })
+)
+
+export function setValueReducer(state: any | undefined, action: Action) {
+    return reducer(state, action);
+}
+
+/*
 export function setValueReducer<TValue>(
   state: FormArrayState<TValue>,
   action: Actions<TValue[]>,
@@ -49,3 +98,4 @@ export function setValueReducer<TValue>(
     },
   );
 }
+*/

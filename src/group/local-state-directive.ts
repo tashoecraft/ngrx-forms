@@ -1,7 +1,6 @@
 import { Directive, EventEmitter, Output } from '@angular/core';
-
-import { Actions } from '../actions';
 import { NgrxFormDirective } from './directive';
+import {Action} from "@ngrx/store";
 
 @Directive({
   // tslint:disable-next-line:directive-selector
@@ -10,13 +9,13 @@ import { NgrxFormDirective } from './directive';
 export class NgrxLocalFormDirective<TValue extends { [key: string]: any }>
   extends NgrxFormDirective<TValue> {
 
-  @Output() ngrxFormsAction = new EventEmitter<Actions<TValue>>();
+  @Output() ngrxFormsAction = new EventEmitter<Action>();
 
   constructor() {
     super(null);
   }
 
-  protected dispatchAction(action: Actions<TValue>) {
+  protected dispatchAction(action: Action) {
     this.ngrxFormsAction.emit(action);
   }
 }

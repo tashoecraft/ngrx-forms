@@ -1,6 +1,6 @@
 import { Action, ActionReducer } from '@ngrx/store';
 
-import { Actions, ALL_NGRX_FORMS_ACTION_TYPES } from './actions';
+import { ALL_NGRX_FORMS_ACTION_TYPES } from './actions';
 import { formArrayReducer } from './array/reducer';
 import { formControlReducer } from './control/reducer';
 import { formGroupReducer } from './group/reducer';
@@ -101,17 +101,13 @@ function reduceNestedFormStates<TState>(state: TState, action: Action): TState {
  * To manually update a form state (e.g. to validate it) use
  * `wrapReducerWithFormStateUpdate`.
  */
-export function onNgrxForms<TState = any>(): { reducer: ActionReducer<TState>; types: string[] } {
+export function onNgrxForms<TState = any>(): { reducer: ActionReducer<TState>; types: ALL_NGRX_FORMS_ACTION_TYPES } {
   return {
     reducer: (state, action) => isFormState(state) ? formStateReducer(state!, action) as unknown as TState : reduceNestedFormStates(state!, action),
     types: ALL_NGRX_FORMS_ACTION_TYPES,
   };
 }
 
-export interface ActionConstructor {
-  new(...args: any[]): Actions<any>;
-  readonly TYPE: string;
-}
 
 export type CreatedAction<TActionCons> = TActionCons extends new (...args: any[]) => infer TAction ? TAction : never;
 
@@ -121,7 +117,7 @@ export type CreatedAction<TActionCons> = TActionCons extends new (...args: any[]
  * your action creator as a parameter.
  */
 export function onNgrxFormsAction<
-  TActionCons extends ActionConstructor,
+  TActionCons extends Action,
   TState
 >(
   actionCons: TActionCons,
@@ -129,7 +125,7 @@ export function onNgrxFormsAction<
 ): { reducer: ActionReducer<TState>; types: string[] } {
   return {
     reducer: (state, action) => reducer(reduceNestedFormStates(state!, action), action as any),
-    types: [actionCons.TYPE],
+    types: [actionCons.type],
   };
 }
 

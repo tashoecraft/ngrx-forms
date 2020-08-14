@@ -1,28 +1,28 @@
-import { Actions, SetUserDefinedPropertyAction } from '../../actions';
-import { FormGroupState, KeyValue } from '../../state';
+import { Action, createReducer, on } from "@ngrx/store";
+import * as NgrxActions from '../../actions';
+import { FormGroupState } from '../../state';
 import { childReducer } from './util';
 
-export function setUserDefinedPropertyReducer<TValue extends KeyValue>(
-  state: FormGroupState<TValue>,
-  action: Actions<TValue>,
-): FormGroupState<TValue> {
-  if (action.type !== SetUserDefinedPropertyAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.SetUserDefinedPropertyAction, (state: FormGroupState<any>, action) => {
+      if (action.controlId !== state.id) {
+        return childReducer(state, action);
+      }
 
-  if (action.controlId !== state.id) {
-    return childReducer(state, action);
-  }
+      if (state.userDefinedProperties[action.name] === action.value) {
+        return state;
+      }
 
-  if (state.userDefinedProperties[action.name] === action.value) {
-    return state;
-  }
+      return {
+        ...state,
+        userDefinedProperties: {
+          ...state.userDefinedProperties,
+          [action.name]: action.value,
+        },
+      };
+    })
+)
 
-  return {
-    ...state,
-    userDefinedProperties: {
-      ...state.userDefinedProperties,
-      [action.name]: action.value,
-    },
-  };
+export function setUserDefinedPropertyReducer(state: any, action: Action): any {
+  return reducer(state, action);
 }

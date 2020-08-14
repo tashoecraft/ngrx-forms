@@ -1,37 +1,37 @@
-import { Actions, MarkAsTouchedAction } from '../../actions';
-import { computeGroupState, FormGroupState, KeyValue } from '../../state';
+import { Action, createReducer, on } from "@ngrx/store";
+import * as NgrxActions from '../../actions';
+import { computeGroupState, FormGroupState } from '../../state';
 import { childReducer, dispatchActionPerChild } from './util';
 
-export function markAsTouchedReducer<TValue extends KeyValue>(
-  state: FormGroupState<TValue>,
-  action: Actions<TValue>,
-): FormGroupState<TValue> {
-  if (action.type !== MarkAsTouchedAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.MarkAsTouchedAction, (state: FormGroupState<any>, action) => {
+        if (action.controlId !== state.id) {
+            return childReducer(state, action);
+        }
 
-  if (action.controlId !== state.id) {
-    return childReducer(state, action);
-  }
+        const controls = dispatchActionPerChild(state.controls, controlId => NgrxActions.MarkAsTouchedAction({controlId}));
 
-  const controls = dispatchActionPerChild(state.controls, controlId => new MarkAsTouchedAction(controlId));
+        if (controls === state.controls) {
+            return state;
+        }
 
-  if (controls === state.controls) {
-    return state;
-  }
+        return computeGroupState(
+            state.id,
+            controls,
+            state.value,
+            state.errors,
+            state.pendingValidations,
+            state.userDefinedProperties,
+            {
+                wasOrShouldBeDirty: state.isDirty,
+                wasOrShouldBeEnabled: state.isEnabled,
+                wasOrShouldBeTouched: true,
+                wasOrShouldBeSubmitted: state.isSubmitted,
+            },
+        );
+    })
+)
 
-  return computeGroupState(
-    state.id,
-    controls,
-    state.value,
-    state.errors,
-    state.pendingValidations,
-    state.userDefinedProperties,
-    {
-      wasOrShouldBeDirty: state.isDirty,
-      wasOrShouldBeEnabled: state.isEnabled,
-      wasOrShouldBeTouched: true,
-      wasOrShouldBeSubmitted: state.isSubmitted,
-    },
-  );
+export function markAsTouchedReducer(state: any, action: Action): any {
+    return reducer(state, action);
 }

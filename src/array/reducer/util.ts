@@ -1,10 +1,10 @@
-import { Actions } from '../../actions';
+import { Action } from '@ngrx/store';
 import { formStateReducer } from '../../reducer';
 import { computeArrayState, FormArrayState, FormGroupControls, FormGroupState, FormState, isArrayState, isGroupState } from '../../state';
 
 export function dispatchActionPerChild<TValue>(
   controls: readonly FormState<TValue>[],
-  actionCreator: (controlId: string) => Actions<TValue>,
+  actionCreator: (controlId: string) => Action,
 ): readonly FormState<TValue>[] {
   let hasChanged = false;
   const newControls = controls
@@ -19,7 +19,7 @@ export function dispatchActionPerChild<TValue>(
 
 function callChildReducers<TValue>(
   controls: readonly FormState<TValue>[],
-  action: Actions<TValue[]>,
+  action: Action,
 ): readonly FormState<TValue>[] {
   let hasChanged = false;
   const newControls = controls
@@ -32,7 +32,7 @@ function callChildReducers<TValue>(
   return hasChanged ? newControls : controls;
 }
 
-export function childReducer<TValue>(state: FormArrayState<TValue>, action: Actions<TValue[]>) {
+export function childReducer<TValue>(state: FormArrayState<TValue>, action: Action) {
   const controls = callChildReducers(state.controls, action);
 
   if (state.controls === controls) {

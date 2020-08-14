@@ -37,42 +37,42 @@ describe(`form array ${setValueReducer.name}`, () => {
 
   it('should create child states on demand', () => {
     const value = ['', '', ''];
-    const resultState = setValueReducer<string>(INITIAL_STATE, SetValueAction({controlId: FORM_CONTROL_ID, value}));
+    const resultState = setValueReducer(INITIAL_STATE, SetValueAction({controlId: FORM_CONTROL_ID, value}));
     expect(resultState.value).toEqual(value);
     expect(resultState.controls[2].value).toEqual(value[2]);
   });
 
   it('should create child states on demand for group children', () => {
     const value = [{ inner: '' }, { inner: '' }, { inner: '' }];
-    const resultState = setValueReducer<typeof value[0]>(INITIAL_STATE_NESTED_GROUP, SetValueAction({controlId: FORM_CONTROL_ID, value}));
+    const resultState = setValueReducer(INITIAL_STATE_NESTED_GROUP, SetValueAction({controlId: FORM_CONTROL_ID, value}));
     expect(resultState.value).toEqual(value);
     expect(resultState.controls[2].value).toEqual(value[2]);
   });
 
   it('should create child states on demand for array children', () => {
     const value = [[''], [''], ['']];
-    const resultState = setValueReducer<typeof value[0]>(INITIAL_STATE_NESTED_ARRAY, SetValueAction({controlId: FORM_CONTROL_ID, value}));
+    const resultState = setValueReducer(INITIAL_STATE_NESTED_ARRAY, SetValueAction({controlId: FORM_CONTROL_ID, value}));
     expect(resultState.value).toEqual(value);
     expect(resultState.controls[2].value).toEqual(value[2]);
   });
 
   it('should create child states on demand for null children', () => {
     const value = ['', '', null];
-    const resultState = setValueReducer<string | null>(INITIAL_STATE as FormArrayState<string | null>, SetValueAction({controlId: FORM_CONTROL_ID, value}));
+    const resultState = setValueReducer(INITIAL_STATE as FormArrayState<string | null>, SetValueAction({controlId: FORM_CONTROL_ID, value}));
     expect(resultState.value).toEqual(value);
     expect(resultState.controls[2].value).toEqual(value[2]);
   });
 
   it('should remove child states on demand', () => {
     const value = [''];
-    const resultState = setValueReducer<string>(INITIAL_STATE, SetValueAction({controlId: FORM_CONTROL_ID, value}));
+    const resultState = setValueReducer(INITIAL_STATE, SetValueAction({controlId: FORM_CONTROL_ID, value}));
     expect(resultState.value).toEqual(value);
     expect(resultState.controls[1]).toBeUndefined();
   });
 
   it('should remove child states on demand when value is empty', () => {
     const value: string[] = [];
-    const resultState = setValueReducer<string>(INITIAL_STATE, SetValueAction({controlId: FORM_CONTROL_ID, value}));
+    const resultState = setValueReducer(INITIAL_STATE, SetValueAction({controlId: FORM_CONTROL_ID, value}));
     expect(resultState.value).toEqual(value);
     expect(resultState.controls[0]).toBeUndefined();
   });
@@ -131,7 +131,7 @@ describe(`form array ${setValueReducer.name}`, () => {
         INITIAL_STATE.controls[1],
       ],
     };
-    const resultState = setValueReducer<string>(state, SetValueAction({controlId: FORM_CONTROL_ID, value: []}));
+    const resultState = setValueReducer(state, SetValueAction({controlId: FORM_CONTROL_ID, value: []}));
     expect(resultState.value).toEqual([]);
     expect(resultState.errors).toEqual({});
     expect(resultState.controls[0]).toBeUndefined();
@@ -153,7 +153,7 @@ describe(`form array ${setValueReducer.name}`, () => {
         INITIAL_STATE.controls[1],
       ],
     };
-    const resultState = setValueReducer<string>(state, SetValueAction({controlId: FORM_CONTROL_ID, value: []}));
+    const resultState = setValueReducer(state, SetValueAction({controlId: FORM_CONTROL_ID, value: []}));
     expect(resultState.value).toEqual([]);
     expect(resultState.errors).toEqual(errors);
     expect(resultState.controls[0]).toBeUndefined();

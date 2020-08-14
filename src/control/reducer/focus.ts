@@ -1,21 +1,20 @@
-import { Actions, FocusAction } from '../../actions';
-import { FormControlState, FormControlValueTypes } from '../../state';
+import * as NgrxActions from '../../actions';
+import {Action, createReducer, on} from "@ngrx/store";
 
-export function focusReducer<TValue extends FormControlValueTypes>(
-  state: FormControlState<TValue>,
-  action: Actions<TValue>,
-): FormControlState<TValue> {
-  if (action.type !== FocusAction.TYPE) {
-    return state;
-  }
+const reducer = createReducer(
+    on(NgrxActions.FocusAction, (state: any) => {
+      if (state.isFocused) {
+        return state;
+      }
 
-  if (state.isFocused) {
-    return state;
-  }
+      return {
+        ...state,
+        isFocused: true,
+        isUnfocused: false,
+      };
+    })
+)
 
-  return {
-    ...state,
-    isFocused: true,
-    isUnfocused: false,
-  };
+export function focusReducer(state: any, action: Action): any {
+  return reducer(state, action);
 }
