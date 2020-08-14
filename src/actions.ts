@@ -20,6 +20,7 @@ export enum ALL_NGRX_FORMS_ACTION_TYPES {
   UnfocusActionType = 'ngrx/forms/UNFOCUS',
   MarkAsSubmittedType = 'ngrx/forms/MARK_AS_SUBMITTED',
   MarkAsUnsubmittedType = 'ngrx/forms/MARK_AS_UNSUBMITTED',
+  AddArrayControlActionType = 'ngrx/forms/ADD_ARRAY_CONTROL',
   AddGroupControlActionType = 'ngrx/forms/ADD_GROUP_CONTROL',
   RemoveArrayControlActionType = 'ngrx/forms/REMOVE_ARRAY_CONTROL',
   SwapArrayControlActionType = 'ngrx/forms/SWAP_ARRAY_CONTROL',
@@ -92,7 +93,7 @@ export class ClearAsyncErrorAction implements Action {
 
 export const ClearAsyncErrorAction = createAction(
     ALL_NGRX_FORMS_ACTION_TYPES.ClearAsyncErrorActionType,
-    props<{controlId: NgrxFormControlId, name: string, value: any}>()
+    props<{controlId: NgrxFormControlId, name: string}>()
 )
 /*
 export class StartAsyncValidationAction implements Action {
@@ -265,6 +266,15 @@ export class AddArrayControlAction<TValue> implements Action {
   ) { }
 }
 */
+
+export const AddArrayControlAction = createAction(
+    ALL_NGRX_FORMS_ACTION_TYPES.AddArrayControlActionType,
+    props<{
+        controlId: NgrxFormControlId,
+        value: any,
+        index?: number
+    }>()
+)
 
 export const AddGroupControlAction = createAction(
     ALL_NGRX_FORMS_ACTION_TYPES.AddGroupControlActionType,

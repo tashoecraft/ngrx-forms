@@ -6,10 +6,10 @@ module.exports = function (config) {
     frameworks: ['jasmine', 'karma-typescript'],
 
     plugins: [
-      require('karma-jasmine'),
-      require('karma-chrome-launcher'),
-      require('karma-spec-reporter'),
-      require('karma-typescript'),
+      'karma-jasmine',
+      'karma-chrome-launcher',
+      'karma-spec-reporter',
+      'karma-typescript',
     ],
 
     files: [

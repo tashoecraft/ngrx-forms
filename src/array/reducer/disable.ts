@@ -1,7 +1,15 @@
-import { Actions, DisableAction } from '../../actions';
+import { DisableAction } from '../../actions';
 import { computeArrayState, FormArrayState } from '../../state';
 import { childReducer, dispatchActionPerChild } from './util';
+import {createReducer, on} from "@ngrx/store";
+import * as NgrxActions from '../../actions';
 
+const reducer = createReducer(
+    {},
+    on(NgrxActions.d)
+)
+
+/*
 export function disableReducer<TValue>(
   state: FormArrayState<TValue>,
   action: Actions<TValue[]>,
@@ -33,3 +41,4 @@ export function disableReducer<TValue>(
     },
   );
 }
+*/
