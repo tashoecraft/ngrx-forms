@@ -243,7 +243,7 @@ describe('form group reducer', () => {
 
   describe(RemoveGroupControlAction.name, () => {
     it('should update state', () => {
-      const action = RemoveGroupControlAction({controlId: FORM_CONTROL_ID, value: 'inner2'});
+      const action = RemoveGroupControlAction({controlId: FORM_CONTROL_ID, name: 'inner2'});
       const resultState = formGroupReducer(INITIAL_STATE_FULL, action);
       expect(resultState).not.toBe(INITIAL_STATE_FULL);
     });
@@ -251,17 +251,17 @@ describe('form group reducer', () => {
 
   describe(SetUserDefinedPropertyAction.name, () => {
     it('should update state', () => {
-      const action = new SetUserDefinedPropertyAction(FORM_CONTROL_ID, 'prop', 12);
-      const resultState = formGroupReducer<FormGroupValue>(INITIAL_STATE_FULL, action);
+      const action = SetUserDefinedPropertyAction({controlId: FORM_CONTROL_ID, name: 'prop', value: 12});
+      const resultState = formGroupReducer(INITIAL_STATE_FULL, action);
       expect(resultState).not.toBe(INITIAL_STATE);
     });
   });
 
   describe(ResetAction.name, () => {
     it('should update state', () => {
-      const action = new ResetAction(FORM_CONTROL_ID);
+      const action = ResetAction({controlId: FORM_CONTROL_ID});
       const state = { ...INITIAL_STATE, isSubmitted: true, isUnsubmitted: false };
-      const resultState = formGroupReducer<FormGroupValue>(state, action);
+      const resultState = formGroupReducer(state, action);
       expect(resultState).not.toBe(INITIAL_STATE);
     });
   });

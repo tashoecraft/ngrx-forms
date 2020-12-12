@@ -13,11 +13,18 @@ export function addArrayControl<TValue>(value: TValue, index?: number): (state: 
  * This update function takes an array form state, a value, and optionally an index and adds a
  * child control at the given index or at the end of the state.
  */
-export function addArrayControl<TValue>(state: FormArrayState<TValue>, value: TValue, index?: number): FormArrayState<TValue>;
+// @ts-ignore
+export function addArrayControl<TValue>(state: FormArrayState<TValue>, value: TValue, index?: number): FormArrayState<TValue> | undefined;
 
 export function addArrayControl<TValue>(valueOrState: TValue | FormArrayState<TValue>, indexOrValue: number | TValue | undefined, index?: number) {
   if (isArrayState(valueOrState)) {
-    return formArrayReducer(valueOrState, AddArrayControlAction({controlId: valueOrState.id, indexOrValue as TValue, index));
+    if (arguments.length === 2) {
+      return formArrayReducer(valueOrState, AddArrayControlAction({controlId: valueOrState.id, value: indexOrValue as TValue}));
+    } else {
+      return formArrayReducer(valueOrState, AddArrayControlAction({controlId: valueOrState.id, value: indexOrValue as TValue, index}));
+    }
+
+
   }
 
   return (s: FormArrayState<TValue>) => addArrayControl(ensureState(s), valueOrState as TValue, indexOrValue as number);
